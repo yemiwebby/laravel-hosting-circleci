@@ -12,6 +12,10 @@ jobs:
       - run: sudo apt update
       - run: sudo docker-php-ext-install zip
 
+      - run:
+          name: "Create Environment file"
+          command: |
+            mv .env.example .env
 
       # Download and cache dependencies
       - restore_cache:
@@ -27,6 +31,14 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
           paths:
             - ./vendor
+
+      - run:
+          name: "Generate app key"
+          command: php artisan key:generate
+
+      - run:
+          name: "Run Tests"
+          command: ./vendor/bin/phpunit
 
       # Deploy Application
       - run:
