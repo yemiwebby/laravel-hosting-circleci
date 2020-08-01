@@ -46,6 +46,4 @@ jobs:
           command: |
             sudo apt update
             sudo apt -qq install git-ftp
-            git commit -am "More details"
-            echo "Deploying project ..."
             git ftp push --user "${username}" --passwd "${password}" "${ftp_location}"
