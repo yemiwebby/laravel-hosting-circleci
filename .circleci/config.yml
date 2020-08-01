@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  deploy:
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:7.4-node-browsers
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run: sudo apt update
+      - run: sudo docker-php-ext-install zip
+
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+
+      - run:
+          name: "Install Dependencies"
+          command: composer install -n --prefer-dist
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+
+      # Deploy Application
+      - run:
+          name: Deploy Master Branch
+          command: |
+            sudo apt update
+            sudo apt -qq install git-ftp
+            echo "Deploying project ..."
+            git ftp push --user "${username}" --passwd "${password}" "${ftp_location}"
