@@ -40,7 +40,7 @@ jobs:
           name: "Run Tests"
           command: ./vendor/bin/phpunit
 
-      # Deploy Application
+      # Deploy App
       - run:
           name: Deploy Master Branch
           command: |
